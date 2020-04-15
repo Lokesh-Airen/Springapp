@@ -1,5 +1,7 @@
 package com.example.SpringBoot.Cleaning;
 
+import com.example.SpringBoot.Feature.Feature_Factory;
+import com.example.SpringBoot.Feature.Features;
 import com.example.SpringBoot.Service.DataRetrivalService;
 import com.example.SpringBoot.model.Redisuserdata;
 import com.example.SpringBoot.model.redisdata2;
@@ -21,11 +23,13 @@ public class ModelFeatureMapping {
     @Autowired
     ModelFeatureCreation modelFeatureCreation;
 
+    @Autowired
+    Feature_Factory feature_factory;
 
 
 //    @PostConstruct
 //    @Transactional
-    public HashMap<String, List<String>> loadAll() {
+        public HashMap<String, List<String>> loadAll() {
         HashMap<String, List<String>> modeldata = new HashMap<>();
         System.out.println("Loading Model-feature mapping Data");
         List<String>featureslist=new ArrayList<>();
@@ -48,10 +52,9 @@ public class ModelFeatureMapping {
         featureslist.add("user_cat_br");
         featureslist.add("user_cat_dtob");
         featureslist.add("distance");
-
         modeldata.put("10",featureslist);
         System.out.println("Loading model mapping Completed");
-return modeldata;
+        return modeldata;
     }
 
 
@@ -60,7 +63,8 @@ return modeldata;
         HashMap<String, List<String>> modeldata=loadAll();
         List<redisdata2> hoteldetailsdata= dataRetrivalService.retrival(hotelids);
         HashMap<String,HashMap<String, Redisuserdata>> hoteluserdata=dataRetrivalService.userretrivalmap(hotelids);
-        List<List<Double>> cleanedfeaturelist=modelFeatureCreation.featurecreation(hoteldetailsdata,modeldata,hoteluserdata,hotelids,cityid,userid);
+        HashMap<String, Features> featureobjectmap=feature_factory.Featurefactory();
+        List<List<Double>> cleanedfeaturelist=modelFeatureCreation.featurecreation(hoteldetailsdata,modeldata,hoteluserdata,hotelids,cityid,userid,featureobjectmap);
         HashMap<String, List<List<Double>>> hm = new HashMap<>();
         hm.put(cityid,cleanedfeaturelist);
         return hm;

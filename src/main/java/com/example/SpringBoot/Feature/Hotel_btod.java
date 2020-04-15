@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+@Component
 public class Hotel_btod implements Features {
 
     @Override
